@@ -43,6 +43,15 @@ class Controller:
         while command[0] != 'quit':
             if command[0] == "reserve" and len(command) == 3:
                 continue
+
+            elif command[0] == "send" and len(command) == 4:
+                m = Message(self.siteID, command[1], command[2])
+
+                tempHost = self.hosts[command[3]]
+                host = (tempHost['ip_address'], tempHost['udp_end_port'])
+
+                self.messenger.singular_send(host, pickle.dumps(m))
+
             elif command[0] == "sendall" and len(command) == 3:
                 m = Message(self.siteID, command[1], command[2])
 
