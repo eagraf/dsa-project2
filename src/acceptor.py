@@ -18,5 +18,5 @@ class Acceptor():
     # Message has contents ('accept', accNum, accVal)
     def accept(self, message):
         if message.contents[0] > self.maxPrepare:
-            self.aceptedProposal = (message.contents[0], message.contents[1])         # Accept the proposal
-            self.messenger.sendall('accepted', self.acceptedProposal)                 # Send to all learners accepted proposal
+            self.acceptedProposal = (message.contents[0], message.contents[1])         # Accept the proposal
+            self.messenger.sendAll('accepted', self.acceptedProposal)                 # Send to all learners accepted proposal

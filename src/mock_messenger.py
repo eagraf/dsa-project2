@@ -28,7 +28,7 @@ class UniversalMessenger():
         for m in self.messages:
             print('%s -> %s: %s %s' % (m.origin, m.destination, m.messageType, m.contents))
 
-    def lastMessageToSite(self, site):
+    def lastMessageToSite(self, site, messageType):
         for m in reversed(self.messages):
-            if m.destination == site:
+            if m.destination == site and m.messageType == messageType:
                 return m
