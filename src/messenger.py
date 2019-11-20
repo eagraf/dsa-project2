@@ -21,7 +21,6 @@ class Messenger:
         threading.Thread(target = self.listen).start()
 
     def add_listener(self, listener):
-        #self.listeners.append(listener)
         temp = type(listener)
         temp = temp.strip('<').strip('>')
         temp = temp.split(" ")
@@ -32,7 +31,6 @@ class Messenger:
 
     def send(self, host, message=b"Hello, world"):
         ''' Send a message to another host '''
-        print("HERE")
         self.send_sock.sendto(message, host)
 
     def singular_send(self, host, message=b"Hello, world"):
@@ -55,20 +53,10 @@ class Messenger:
         while True:
             data, _ = self.recv_sock.recvfrom(1024)
             message = pickle.loads(data)
-            #print(message.message)
-            #pID = self.hosts[message.siteID]['id']
 
             t = threading.Thread(target = self.receive, args = (message.siteID, message.message_type, message.content))
             threads.append(t)
             t.start()
-            #self.listeners[0].receive(message.siteID, message.message_type, message.content) 
-
-            #for listener in self.listeners:
-            #self.listeners[1].receive(message.clock, pID, message.np)
-            
-            #users, myID, userPlanes = self.listeners[0].getUsers(message.np)
-            #self.listeners[2].receiveAdd(users, myID, len(self.hosts), userPlanes)
-            #self.listeners[2].receive(pID, self.listeners[0])
 
     def receive(self, siteID, message_type, content):
         print("SiteId", siteID)
