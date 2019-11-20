@@ -12,6 +12,7 @@ class Proposer():
         self.index = processes.index(site)
         self.promises = dict()                # Dictionary that tells whether a promise has been received from a specific site
         self.resetPromises()
+        self.slot = 0
 
     # Find the next proposal number in the disjoint set for this site
     def nextNum(self):
@@ -20,14 +21,15 @@ class Proposer():
         return n
 
     # Phase 1 of the Synod algorithm
-    def prepare(self, value):
+    def prepare(self, value, slot):
         self.proposalNum = self.nextNum()
         self.maxPropNum = self.proposalNum
         self.value = value
+        self.slot = slot
         self.resetPromises()
 
         # Send to all acceptors
-        self.messenger.sendAll('prepare', (self.maxPropNum,))
+        self.messenger.sendAll('prepare', (self.maxPropNum,), slot)
 
     # Phase 2 of the Synod algorithm
     # Message has the contents ('promise', accNum, accVal)
@@ -74,7 +76,7 @@ class Proposer():
             else:
                 v = self.promises[maxProcess[0]][1]          # accVal from promise with largest accNum
 
-            self.messenger.sendAll('accept', (self.proposalNum, v))
+            self.messenger.sendAll('accept', (self.proposalNum, v), message.slot)
 
 
     # Reset received promises to all be false.

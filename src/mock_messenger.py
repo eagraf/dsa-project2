@@ -8,12 +8,12 @@ class MockMessenger():
         self.processes = processes
         self.universal = universal
 
-    def send(self, destination, messageType, contents):
-        self.universal.addMessage(Message(self.site, destination, messageType, contents))
+    def send(self, destination, messageType, contents, slot):
+        self.universal.addMessage(Message(self.site, destination, messageType, contents, slot))
 
-    def sendAll(self, messageType, contents):
+    def sendAll(self, messageType, contents, slot):
         for p in self.processes:
-            self.universal.addMessage(Message(self.site, p, messageType, contents))
+            self.universal.addMessage(Message(self.site, p, messageType, contents, slot))
 
 
 class UniversalMessenger():
