@@ -11,8 +11,9 @@ class Proposer():
         self.proposalNumber = 0 
         self.index = list(processes).index(site)
         self.promises = dict()                # Dictionary that tells whether a promise has been received from a specific site
-        self.resetPromises()
+        self.accepted = False
         self.slot = 0
+        self.resetPromises()
 
     # Find the next proposal number in the disjoint set for this site
     def nextNum(self):
@@ -61,21 +62,11 @@ class Proposer():
             for promise in actualPromises:
                 if promise[1][1] > maxProcess[1][1]:
                     maxProcess = promise 
-        # maxProcess starts out as the first not none promise
-        '''maxProcess = list(self.promises)[0]
-        print(self.promises)
-        allNull = True
-        for process, promise in self.promises.items():
-            if promise != None:
-                numPromises += 1
-                if self.promises[maxProcess][0] != None:
-                    if self.promises[maxProcess][0] < promise[0]:
-                        maxProcess = process
-                if promise[1] != None:
-                    allNull = False'''
+
 
         # If a majority of sites return promises, send accepted number and value
-        if numPromises > len(self.processes) / 2:
+        if numPromises > len(self.processes) / 2 and self.accepted == False:
+            self.accepted = True
             if allNull:
                 v = self.value                            # if all promises had null values, use own value
             else:
@@ -86,5 +77,6 @@ class Proposer():
 
     # Reset received promises to all be false.
     def resetPromises(self):
+        self.accepted = False
         for process in self.processes:
             self.promises[process] = None

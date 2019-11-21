@@ -47,7 +47,7 @@ class Controller:
                 self.messenger.sendAll(command[1], command[2], 0)
 
             elif command[0] == "prepare":
-                self.paxos_driver.testBoi()
+                self.paxos_driver.testBoi(command[1])
 
             else:
                 print("invalid command")
