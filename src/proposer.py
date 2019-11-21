@@ -9,7 +9,7 @@ class Proposer():
         self.value = None 
         self.maxPropNum = 0
         self.proposalNumber = 0 
-        self.index = processes.index(site)
+        self.index = list(processes).index(site)
         self.promises = dict()                # Dictionary that tells whether a promise has been received from a specific site
         self.resetPromises()
         self.slot = 0
@@ -22,6 +22,7 @@ class Proposer():
 
     # Phase 1 of the Synod algorithm
     def prepare(self, value, slot):
+        print("prepare")
         self.proposalNum = self.nextNum()
         self.maxPropNum = self.proposalNum
         self.value = value
@@ -31,10 +32,14 @@ class Proposer():
         # Send to all acceptors
         self.messenger.sendAll('prepare', (self.maxPropNum,), slot)
 
+    def receive(self, message):
+        if message.messageType == 'promise':
+            self.receivePromise(message)
+
     # Phase 2 of the Synod algorithm
     # Message has the contents ('promise', accNum, accVal)
     def receivePromise(self, message):
-
+        print("receivePromise")
         # Update maxPropNum if necessary
         if message.contents[0] != None:
             if message.contents[0] > self.maxPropNum:

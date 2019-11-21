@@ -5,6 +5,7 @@ import json
 import pickle
 from messenger import Messenger
 from message import Message
+from paxos_driver import PaxosDriver
 
 
 class Controller:
@@ -15,6 +16,7 @@ class Controller:
         	self.hosts = json.load(hosts_file)['hosts']
 
         self.messenger = Messenger(self.hosts[self.siteID], self.hosts, self.siteID)
+        self.paxos_driver = PaxosDriver(self.siteID, self.hosts, self.messenger)
         self.handle_user_input()
 
     def handle_user_input(self):
@@ -43,6 +45,9 @@ class Controller:
 
                 #self.messenger.sendAll(tempHosts, pickle.dumps(m))
                 self.messenger.sendAll(command[1], command[2], 0)
+
+            elif command[0] == "prepare":
+                self.paxos_driver.testBoi()
 
             else:
                 print("invalid command")

@@ -15,20 +15,21 @@ class Messenger:
         self.send_sock.bind(self.send_address)
         self.recv_sock.bind(self.recv_address)
 
-        self.listeners = dict()
+        self.listeners = list()
         self.hosts = hosts
         self.siteID = siteID
 
         threading.Thread(target = self.listen).start()
 
-    def add_listener(self, listener):
-        temp = type(listener)
-        temp = temp.strip('<').strip('>')
-        temp = temp.split(" ")
-        temp = temp[1].strip("'")
-        temp = temp.split(".")
-        print("Listener Type", temp[1])
-        self.listeners[temp[1]] = listener
+    def addListener(self, listener):
+        #temp = type(listener)
+        #temp = temp.strip('<').strip('>')
+        #temp = temp.split(" ")
+        #temp = temp[1].strip("'")
+        #temp = temp.split(".")
+        #print("Listener Type", temp[1])
+        #self.listeners[temp[1]] = listener
+        self.listeners.append(listener)
 
     def sendMessage(self, host, message=b"Hello, world"):
         ''' Send a message to another host '''
@@ -65,12 +66,15 @@ class Messenger:
         print("SiteId", message.origin)
         print("Message_Type", message.messageType)
         print("Content", message.contents)
-        if message.messageType == "Promise":
-            print("Call Proposer Receive")
+        for listener in self.listeners:
+            listener.receive(message) 
+
+        #if message.messageType == "Promise":
+        #    print("Call Proposer Receive")
             #listeners["Proposer"].receive(message.siteID, message.message_type, message.content)
-        elif message.messageType == "Prepare" or message.messageType == "Accept":
-            print("Call Acceptor Receive")
+       # elif message.messageType == "Prepare" or message.messageType == "Accept":
+        #    print("Call Acceptor Receive")
             #listeners["Acceptor"].receive(message.siteID, message.message_type, message.content)
-        elif message.messageType == "Commit":
-            print("Call Listener Receive")
+        #elif message.messageType == "Commit":
+        #    print("Call Listener Receive")
             #listeners["Listener"].receive(message.siteID, message.message_type, message.content)

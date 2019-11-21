@@ -6,6 +6,10 @@ class Learner():
         self.accepts = list()
         self.log = list()
 
+    def receive(self, message):
+        if message.messageType == 'accepted':
+            self.receiveAccepted(message)
+
     def receiveAccepted(self, message):
         accNum, accVal = message.contents
 
