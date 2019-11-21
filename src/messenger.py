@@ -1,6 +1,7 @@
 import socket
 import pickle
 import threading
+from message import Message
 
 class Messenger:
 
@@ -29,20 +30,22 @@ class Messenger:
         print("Listener Type", temp[1])
         self.listeners[temp[1]] = listener
 
-    def send(self, host, message=b"Hello, world"):
+    def sendMessage(self, host, message=b"Hello, world"):
         ''' Send a message to another host '''
-        self.send_sock.sendto(message, host)
+        self.send_sock.sendto(pickle.dumps(message), host)
 
-    def singular_send(self, host, message=b"Hello, world"):
-        threading.Thread(target = self.send, args = (host,message)).start()
+    def send(self, destination, messageType, contents, slot):
+        message = Message(self.siteID, destination, messageType, contents, slot)
+        host = (self.hosts[destination]['ip_address'], self.hosts[destination]['udp_end_port'])
+        threading.Thread(target = self.sendMessage, args = (host, message)).start()
 
-
-    def send_all(self, hostList, message=b"Hello, world"):
+    #sendAll(self, messageType, contents, slot):
+    def sendAll(self, messageType, contents, slot): 
         ''' Send a message a list of host concurrently '''
         threads = list()
-        for host in hostList:
-            #msg = Message(self.siteID, self.message[0], self.message[1])
-            t = threading.Thread(target = self.send, args = (host,message))
+        for key, host in self.hosts.items():
+            message = Message(self.siteID, key, messageType, contents, slot)
+            t = threading.Thread(target = self.sendMessage, args = ((host['ip_address'], host['udp_end_port']), message))
             threads.append(t)
             t.start()
         for thread in threads:
@@ -54,20 +57,20 @@ class Messenger:
             data, _ = self.recv_sock.recvfrom(1024)
             message = pickle.loads(data)
 
-            t = threading.Thread(target = self.receive, args = (message.siteID, message.message_type, message.content))
+            t = threading.Thread(target = self.receive, args = (message,))
             threads.append(t)
             t.start()
 
-    def receive(self, siteID, message_type, content):
-        print("SiteId", siteID)
-        print("Message_Type", message_type)
-        print("Content", content)
-        if message_type == "Promise":
+    def receive(self, message):
+        print("SiteId", message.origin)
+        print("Message_Type", message.messageType)
+        print("Content", message.contents)
+        if message.messageType == "Promise":
             print("Call Proposer Receive")
             #listeners["Proposer"].receive(message.siteID, message.message_type, message.content)
-        elif message_type == "Prepare" or message_type == "Accept":
+        elif message.messageType == "Prepare" or message.messageType == "Accept":
             print("Call Acceptor Receive")
             #listeners["Acceptor"].receive(message.siteID, message.message_type, message.content)
-        elif message_type == "Commit":
+        elif message.messageType == "Commit":
             print("Call Listener Receive")
             #listeners["Listener"].receive(message.siteID, message.message_type, message.content)

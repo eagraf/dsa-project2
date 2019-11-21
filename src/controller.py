@@ -14,29 +14,9 @@ class Controller:
         with open('knownhosts.json') as hosts_file:
         	self.hosts = json.load(hosts_file)['hosts']
 
-		#self.hostToID = dict()
-        count = 0
-        for key in sorted(self.hosts.keys()):
-			#self.hostToID[key] = count
-            self.hosts[key]['id'] = count
-            count += 1
-        
         self.messenger = Messenger(self.hosts[self.siteID], self.hosts, self.siteID)
-		#self.airport = planes.Planes()
+        self.handle_user_input()
 
-		#self.store = StableStorage()
-        if len(sys.argv) >= 3:
-            handle_test_file()
-        else:
-			#wu = imp.Wuubern(len(hosts), hostToID[siteID])
-			#wu, self.airport = self.store.initialize(len(self.hosts), self.hosts[self.siteID]['id'])
-			#self.messenger.add_listener(wu)
-			#self.messenger.add_listener(self.store)
-			#self.messenger.add_listener(self.airport)
-            self.handle_user_input()
-
-
-	#def handle_user_input(wu, messenger, hosts, hostToID, siteID, airport, stable_storage):
     def handle_user_input(self):
 		#Main loop for handling user input
         command = input().split(" ")
@@ -45,26 +25,29 @@ class Controller:
                 continue
 
             elif command[0] == "send" and len(command) == 4:
-                m = Message(self.siteID, command[1], command[2])
+                m = Message(self.siteID, command[3], command[1], command[2], 0)
 
                 tempHost = self.hosts[command[3]]
                 host = (tempHost['ip_address'], tempHost['udp_end_port'])
 
-                self.messenger.singular_send(host, pickle.dumps(m))
+                self.messenger.send(command[3], command[1], command[2], 0)
+
+                #self.messenger.send(host, pickle.dumps(m))
 
             elif command[0] == "sendall" and len(command) == 3:
-                m = Message(self.siteID, command[1], command[2])
+                #m = Message(self.siteID, command[3], command[1], command[2], 0)
 
                 tempHosts = list()
                 for _, host in self.hosts.items():
                     tempHosts.append((host['ip_address'], host['udp_end_port']))
 
-                self.messenger.send_all(tempHosts, pickle.dumps(m))
+                #self.messenger.sendAll(tempHosts, pickle.dumps(m))
+                self.messenger.sendAll(command[1], command[2], 0)
 
             else:
                 print("invalid command")
-			
-			# Wait for next command
+
+            # Wait for next command
             command = input().split(" ")
         
         print("exiting...")
