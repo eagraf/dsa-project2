@@ -17,5 +17,6 @@ class PaxosDriver():
         self.messenger.addListener(self.acceptor)
         self.messenger.addListener(self.learner)
 
+
     def testBoi(self):
         self.proposer.prepare('ABC', 0)
