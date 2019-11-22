@@ -2,11 +2,11 @@ from message import Message
 
 class Acceptor():
 
-    def __init__(self, processes, messenger):
+    def __init__(self, processes, messenger, accProps, maxPrep):
         self.processes = processes
         self.messenger = messenger
-        self.maxPrepare = 0
-        self.acceptedProposals = list()
+        self.maxPrepare = maxPrep
+        self.acceptedProposals = accProps
 
     def receive(self, message):
         print("hello")
