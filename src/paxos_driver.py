@@ -48,7 +48,8 @@ class PaxosDriver():
             if self.airport.checkSpot(event):
                 l = len(self.learner.log)
                 #print("log position is", len(self.learner.log))
-                self.proposer.prepare(event, len(self.learner.log))
+                if not self.proposer.prepare(event, len(self.learner.log)):
+                    return False
                 while l >= len(self.learner.log) or self.learner.log[l] == None:
                         continue
             else:
@@ -62,7 +63,8 @@ class PaxosDriver():
             if event.user in self.airport.allUsers:
                 l = len(self.learner.log)
                 #print("log position is", len(self.learner.log))
-                self.proposer.prepare(event, len(self.learner.log))
+                if not self.proposer.prepare(event, len(self.learner.log)):
+                    return False
                 while l >= len(self.learner.log) or self.learner.log[l] == None:
                         continue
             else:

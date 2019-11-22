@@ -63,9 +63,9 @@ class Messenger:
             t.start()
 
     def receive(self, message):
-        print("SiteId", message.origin)
-        print("Message_Type", message.messageType)
-        print("Content", message.contents)
+        #print("SiteId", message.origin)
+        #print("Message_Type", message.messageType)
+        #print("Content", message.contents)
         for listener in self.listeners:
             listener.receive(message) 
 
