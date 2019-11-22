@@ -1,8 +1,9 @@
 class Learner():
 
-    def __init__(self, processes, messenger):
+    def __init__(self, processes, messenger, driver):
         self.processes = processes
         self.messenger = messenger
+        self.paxos_driver = driver
         self.accepts = list()
         self.log = list()
 
@@ -30,6 +31,9 @@ class Learner():
         if len(self.accepts[message.slot][accNum]) > len(self.processes)/2:
             print("Commit " , accVal)
             self.log[message.slot] = accVal
+            #print("HERE HERE HRER HERE", self.log)
+
+            self.paxos_driver.airport.fillPlane(self.log)
 
     def initializeSlots(self, slot):
         for i in range(len(self.log), slot+1):

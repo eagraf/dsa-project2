@@ -12,7 +12,7 @@ class PaxosDriver():
 
         self.proposer =  Proposer(site, hosts, messenger)
         self.acceptor = Acceptor(hosts, messenger)
-        self.learner = Learner(hosts, messenger)
+        self.learner = Learner(hosts, messenger, self)
         self.airport = Planes()
 
         self.messenger.addListener(self.proposer)
@@ -24,27 +24,31 @@ class PaxosDriver():
 
     def fillHoles(self):
         holes = True
-        while holes:
+        temp = 0
+        while holes or temp != 3:
             holes = False
             for i in range(len( self.learner.log )):
                 if self.learner.log[i] == None:
                     self.proposer.prepare(None, i)
                     holes = True
+            temp += 1
 
             self.airport.fillPlane(self.learner.log)
 
     def createReservation(self, event):
         self.fillHoles()
-        if self.airport.checkSpot(event):
-            print("log position is", len(self.learner.log))
-            self.proposer.prepare(event, len(self.learner.log))
-            return True
-        else:
-            return False
+        while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and self.learner.log[-1] != event): 
+            if self.airport.checkSpot(event):
+                print("log position is", len(self.learner.log))
+                self.proposer.prepare(event, len(self.learner.log))
+            else:
+                return False
+        return True
         
     def cancelReservation(self, event):
         self.fillHoles()
         if event.user in self.airport.allUsers:
+
             self.proposer.prepare(event, len(self.learner.log))
             return True
         else:

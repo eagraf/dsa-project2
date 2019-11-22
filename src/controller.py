@@ -30,12 +30,14 @@ class Controller:
                 plns = [int(x) for x in plns]
                 id = random.randint(0,1000)
                 ev = Event(id, command[0], command[1], plns)
-                self.paxos_driver.createReservation(ev)
+                if not self.paxos_driver.createReservation(ev):
+                    print("Cannot create reservation")
             
             elif command[0] == "cancel" and len(command) == 2:
-                id = random.random(1000)
+                id = random.randint(0,1000)
                 ev = Event(id, command[0], command[1])
-                self.paxos_driver.cancelReservation(ev)
+                if not self.paxos_driver.cancelReservation(ev):
+                    print("Reservation already canceled")
 
             elif command[0] == "view" and len(command) == 1:
                 view = self.paxos_driver.airport.getView()
