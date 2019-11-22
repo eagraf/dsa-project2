@@ -24,7 +24,7 @@ class Planes:
     
     def checkSpot(self, event):
         for pln in event.planes:
-            if not (self.allPlanes[pln -1][0] == 0 or self.allPlanes[pln -1][0] == event) and not (self.allPlanes[pln -1][1] == 0 or self.allPlanes[pln -1][1] == event):
+            if self.allPlanes[pln -1][0] != 0 and self.allPlanes[pln -1][1] != 0:
                 return False
         return True
 

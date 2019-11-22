@@ -7,10 +7,13 @@ class Event:
         self.planes = plnsLst
     
     def __str__(self):
-        s = "Id:" + str(self.id) + '\t'
-        s += "Type:" + str(self.type) + '\t'
-        s += "Users:" + self.user + '\t'
-        s += "Planes List:" + str(self.planes) + '\t'
+        #s = "Id:" + str(self.id) + '\t'
+        s = str(self.type) + ' '
+        s += self.user
+        if(self.planes != None):
+            for i in range(len(self.planes) -1):
+                s += ' ' + str(self.planes[i]) + ','
+            s += ' ' + str(self.planes[-1])
 
         return s
     
