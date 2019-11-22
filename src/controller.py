@@ -42,7 +42,10 @@ class Controller:
             elif command[0] == "view" and len(command) == 1:
                 view = self.paxos_driver.airport.getView()
                 for v in view:
-                    print(v)
+                    print(v[0], end = " ")
+                    for p in range(len(v[1]) -1):
+                        print(v[1][p], end = ", ")
+                    print(v[1][-1])
                 
             elif command[0] == "log" and len(command) == 1:
                 log = self.paxos_driver.learner.log
