@@ -19,7 +19,7 @@ class Proposer():
         return n
 
     # Phase 1 of the Synod algorithm
-    def prepare(self, value, slot, counter=0):
+    def _prepare(self, value, slot, counter=0):
         print("prepare")
 
         # Make sure slots are initialized.
@@ -31,6 +31,7 @@ class Proposer():
         proposal['proposalNum'] = self.nextNum()
         proposal['accepted'] = False
         proposal['counter'] = counter
+        proposal['time'] = time.time
         proposal['promises'] = dict()
         for process in self.processes:
             proposal['promises'][process] = None
@@ -41,13 +42,16 @@ class Proposer():
         self.messenger.sendAll('prepare', (proposal['proposalNum'],), slot)
         #self.proposalTime = time.time()
 
-        # Set a 5 second timeout, retry up to 3 times.
-        #if counter < 3:
-        #    signal.signal(signal.SIGALRM, self.timeout)
-        #    signal.alarm(5)
+    def prepare(self, value, slot):
+        for i in range(3):
+            print(i)
+            self._prepare(value, slot)
+            time.sleep(0.5)
+            if self.proposals[slot]['accepted'] == True:
+                return True
+            print("Timed out")
+        return False
 
-    def timeout(self, signum, frame):
-        self.prepare(self.value, self.slot, )
 
     def receive(self, message):
         if message.messageType == 'promise':
