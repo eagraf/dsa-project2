@@ -60,7 +60,9 @@ class Proposer():
             actualPromises = list(filter((lambda a: a[1] != None and a[1][0] != None), list(self.promises.items())))
             maxProcess = actualPromises[0]
             for promise in actualPromises:
-                if promise[1][1] > maxProcess[1][1]:
+                print(promise)
+                if promise[1][0] > maxProcess[1][0]:
+                    print(promise[1][1])
                     maxProcess = promise 
 
 

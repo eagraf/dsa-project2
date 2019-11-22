@@ -6,7 +6,7 @@ class Acceptor():
         self.processes = processes
         self.messenger = messenger
         self.maxPrepare = 0
-        self.acceptedProposal = (None, None)
+        self.acceptedProposals = list()
 
     def receive(self, message):
         print("hello")
@@ -19,13 +19,21 @@ class Acceptor():
     # Message has contents (prepare', n)
     def promise(self, message):
         print("promise")
+        # Make sure slots are initialized.
+        if message.slot >= len(self.acceptedProposals):
+            self.initializeSlots(message.slot)
+
         if message.contents[0] > self.maxPrepare:
-            self.messenger.send(message.origin, 'promise', self.acceptedProposal, message.slot)
+            self.messenger.send(message.origin, 'promise', self.acceptedProposals[message.slot], message.slot)
 
     # Phase 2 of the Synod algorithm
     # Message has contents ('accept', accNum, accVal)
     def accept(self, message):
         print("accept")
         if message.contents[0] > self.maxPrepare:
-            self.acceptedProposal = (message.contents[0], message.contents[1])         # Accept the proposal
-            self.messenger.sendAll('accepted', self.acceptedProposal, message.slot)                 # Send to all learners accepted proposal
+            self.acceptedProposals[message.slot] = (message.contents[0], message.contents[1])         # Accept the proposal
+            self.messenger.sendAll('accepted', self.acceptedProposals[message.slot], message.slot)                 # Send to all learners accepted proposal
+
+    def initializeSlots(self, slot):
+        for i in range(len(self.acceptedProposals), slot+1):
+            self.acceptedProposals.append((None, None))
