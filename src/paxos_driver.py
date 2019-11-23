@@ -38,11 +38,16 @@ class PaxosDriver():
                     self.proposer.prepare(None, i)
                     holes = True
             temp += 1
+            
+        if holes:
+            return False
+        return True
 
             #self.airport.fillPlane(self.learner.log)
 
     def createReservation(self, event):
-        self.fillHoles()
+        if not self.fillHoles():
+            return False
         while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and not self.learner.log[-1].same(event) ):
             print("HEREHERE\nHEREHEREHEREHEREHERE\nHEREHEREHEREHERE") 
             if self.airport.checkSpot(event):
