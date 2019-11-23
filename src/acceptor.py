@@ -17,7 +17,7 @@ class Acceptor():
     # Phase 1 of the Synod algorithm
     # Message has contents (prepare', n)
     def promise(self, message):
-        print("promise")
+        #print("promise")
         # Make sure slots are initialized.
         if message.slot >= len(self.acceptedProposals):
             self.initializeSlots(message.slot)
@@ -29,13 +29,13 @@ class Acceptor():
     # Phase 2 of the Synod algorithm
     # Message has contents ('accept', accNum, accVal)
     def accept(self, message):
-        print("accept")
+        #print("accept")
         # Make sure slots are initialized.
         if message.slot >= len(self.acceptedProposals):
             self.initializeSlots(message.slot)
 
-        print(message.contents[0])
-        print(self.maxPrepares[message.slot])
+        #print(message.contents[0])
+        #print(self.maxPrepares[message.slot])
         if message.contents[0] >= self.maxPrepares[message.slot]:
             self.acceptedProposals[message.slot] = (message.contents[0], message.contents[1])         # Accept the proposal
             self.messenger.sendAll('accepted', self.acceptedProposals[message.slot], message.slot)                 # Send to all learners accepted proposal

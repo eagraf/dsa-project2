@@ -17,10 +17,7 @@ class Planes:
             if event.type == "cancel":
                 self.deleteReservation(event)
             elif event.type == "reserve":
-                self.makeReservation(event)
-            else:
-                print("WRONG FILL")
-                print(event)    
+                self.makeReservation(event)  
     
     def checkSpot(self, event):
         for pln in event.planes:
@@ -32,14 +29,13 @@ class Planes:
         for pln in event.planes:
             if self.allPlanes[pln -1][0] == 0 or self.allPlanes[pln -1][0] == event:
                 self.allPlanes[pln -1][0] = event
-                #print("HERE", event.user, self.allPlanes[pln -1][0])
             elif self.allPlanes[pln -1][1] == 0 or self.allPlanes[pln -1][1] == event:
                 self.allPlanes[pln -1][1] = event
-            elif self.allPlanes[pln -1][0] != 0 and self.allPlanes[pln -1][1] != 0:
-                print("ERROR!!!!- Log has been double booked!")
-                print(event)
-            else:
-                print("HUH, should never get here 1")
+            #elif self.allPlanes[pln -1][0] != 0 and self.allPlanes[pln -1][1] != 0:
+                #print("ERROR!!!!- Log has been double booked!")
+                #print(event)
+            #else:
+            #    print("HUH, should never get here 1")
 
         if event.user in self.allUsers.keys():
             self.allUsers[event.user].add(tuple(event.planes))
@@ -50,10 +46,10 @@ class Planes:
         
 
     def deleteReservation(self, event):
-        if event.user not in self.allUsers.keys():
-            print("ERROR!!!!- Delete not possible!")
-            print(event)
-            return
+        #if event.user not in self.allUsers.keys():
+            #print("ERROR!!!!- Delete not possible!")
+            #print(event)
+            #return
         #print(self.allUsers[event.user])
         for pln in self.allUsers[event.user]:
             for p in pln:
@@ -61,8 +57,6 @@ class Planes:
                     self.allPlanes[p -1][0] = 0
                 elif self.allPlanes[p -1][1] !=0 and event.user == self.allPlanes[p -1][1].user:
                     self.allPlanes[p -1][1] = 0
-                else:
-                    print("HUH Weird Delete")
         self.allUsers.pop(event.user)
                 
     def getView(self):

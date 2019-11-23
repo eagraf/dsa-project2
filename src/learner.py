@@ -30,7 +30,7 @@ class Learner():
 
         # If a majority of accepts are received for the given proposal, commit to log
         if len(self.accepts[message.slot][accNum]) > len(self.processes)/2:
-            print("Commit " , accVal)
+            print("Commit" , accVal)
             self.log[message.slot] = accVal
             #print("HERE HERE HRER HERE", self.log)
             self.paxos_driver.newSpot()
