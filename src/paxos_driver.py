@@ -81,7 +81,7 @@ class PaxosDriver():
     def newSpot(self):
         self.fillHoles()
         self.airport.fillPlane(self.learner.log)
-        self.store.store(self.learner.log, self.acceptor.acceptedProposals, self.acceptor.maxPrepare, self.learner.accepts)
+        self.store.store(self.learner.log, self.acceptor.acceptedProposals, self.acceptor.maxPrepares, self.learner.accepts)
         
 
 
