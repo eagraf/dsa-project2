@@ -50,8 +50,10 @@ class Controller:
             elif command[0] == "log" and len(command) == 1:
                 log = self.paxos_driver.learner.log
                 for event in log:
+                    if event.type == "filler":
+                        continue
                     print(event)
-                print(self.paxos_driver.proposer.proposals)
+                #print(self.paxos_driver.proposer.proposals)
 
             elif command[0] == "send" and len(command) == 4:
                 Message(self.siteID, command[3], command[1], command[2], 0)

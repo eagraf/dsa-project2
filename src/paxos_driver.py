@@ -2,7 +2,9 @@ from proposer import Proposer
 from acceptor import Acceptor
 from learner import Learner
 from planes import Planes
+from event import Event
 from stablestorage import StableStorage
+import random
 
 class PaxosDriver():
 
@@ -25,6 +27,20 @@ class PaxosDriver():
         self.messenger.addListener(self.acceptor)
         self.messenger.addListener(self.learner)
 
+        self.fillToCurrent()
+    
+    def fillToCurrent(self):
+        self.fillHoles()
+        id = random.randint(0,1000)
+        ev = Event(id, 'filler', self.site)
+        while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and self.learner.log[-1] != ev ):
+            l = len(self.learner.log)
+            #print("log position is", len(self.learner.log))
+            if not self.proposer.prepare(ev, len(self.learner.log)):
+                return False
+            while l >= len(self.learner.log) or self.learner.log[l] == None:
+                continue
+
     def testBoi(self, value):
         self.proposer.prepare(value, 0)
 
@@ -38,7 +54,7 @@ class PaxosDriver():
                     self.proposer.prepare(None, i)
                     holes = True
             temp += 1
-            
+
         if holes:
             return False
         return True
@@ -48,7 +64,7 @@ class PaxosDriver():
     def createReservation(self, event):
         if not self.fillHoles():
             return False
-        while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and not self.learner.log[-1].same(event) ):
+        while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and self.learner.log[-1] != event ):
             print("HEREHERE\nHEREHEREHEREHEREHERE\nHEREHEREHEREHERE") 
             if self.airport.checkSpot(event):
                 l = len(self.learner.log)
