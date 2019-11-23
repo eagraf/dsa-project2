@@ -1,10 +1,10 @@
 class Learner():
 
-    def __init__(self, processes, messenger, driver, log):
+    def __init__(self, processes, messenger, driver, log, acc):
         self.processes = processes
         self.messenger = messenger
         self.paxos_driver = driver
-        self.accepts = list()
+        self.accepts = acc
         self.log = log
 
     def receive(self, message):
@@ -17,6 +17,7 @@ class Learner():
         # Make sure slots are initialized.
         if message.slot >= len(self.log):
             self.initializeSlots(message.slot)
+        
 
         # Return if a value has already been committed.
         if self.log[message.slot] != None:
