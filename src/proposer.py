@@ -9,12 +9,12 @@ class Proposer():
         self.processes = processes
         self.messenger = messenger
         self.proposals = list()
-        self.maxPropNum = 0
+        self.maxPropNums = list()
         self.index = list(processes).index(site)
 
     # Find the next proposal number in the disjoint set for this site
-    def nextNum(self):
-        round = (self.maxPropNum // len(self.processes)) + 1
+    def nextNum(self, slot):
+        round = (self.maxPropNums[slot] // len(self.processes)) + 1
         n = (round * len(self.processes)) + self.index
         return n
 
@@ -28,7 +28,7 @@ class Proposer():
 
         proposal = dict()
         proposal['value'] = value
-        proposal['proposalNum'] = self.nextNum()
+        proposal['proposalNum'] = self.nextNum(slot)
         proposal['accepted'] = False
         proposal['valueAccepted'] = False
         proposal['counter'] = counter
@@ -67,6 +67,8 @@ class Proposer():
 
 
     def receive(self, message):
+        print("hello")
+        print(message.messageType)
         if message.messageType == 'promise':
             self.receivePromise(message)
 
@@ -76,8 +78,8 @@ class Proposer():
         print("receivePromise")
         # Update maxPropNum if necessary
         if message.contents[0] != None:
-            if message.contents[0] > self.maxPropNum:
-                self.maxPropNum = message.contents[0]
+            if message.contents[0] > self.maxPropNums[message.slot]:
+                self.maxPropNums[message.slot] = message.contents[0]
 
         proposal = self.proposals[message.slot]
 
@@ -116,4 +118,5 @@ class Proposer():
 
     def initializeSlots(self, slot):
         for i in range(len(self.proposals), slot+1):
+            self.maxPropNums.append(0)
             self.proposals.append(None)

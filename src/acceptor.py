@@ -34,6 +34,8 @@ class Acceptor():
         if message.slot >= len(self.acceptedProposals):
             self.initializeSlots(message.slot)
 
+        print(message.contents[0])
+        print(self.maxPrepares[message.slot])
         if message.contents[0] >= self.maxPrepares[message.slot]:
             self.acceptedProposals[message.slot] = (message.contents[0], message.contents[1])         # Accept the proposal
             self.messenger.sendAll('accepted', self.acceptedProposals[message.slot], message.slot)                 # Send to all learners accepted proposal
