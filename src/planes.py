@@ -54,7 +54,7 @@ class Planes:
             print("ERROR!!!!- Delete not possible!")
             print(event)
             return
-        print(self.allUsers[event.user])
+        #print(self.allUsers[event.user])
         for pln in self.allUsers[event.user]:
             for p in pln:
                 if self.allPlanes[p -1][0] !=0 and event.user == self.allPlanes[p -1][0].user:
