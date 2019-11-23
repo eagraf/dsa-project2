@@ -1,6 +1,7 @@
 import socket
 import pickle
 import threading
+import sys
 from message import Message
 
 class Messenger:
@@ -38,6 +39,7 @@ class Messenger:
     def send(self, destination, messageType, contents, slot):
         message = Message(self.siteID, destination, messageType, contents, slot)
         host = (self.hosts[destination]['ip_address'], self.hosts[destination]['udp_end_port'])
+        print("sending %s %s to %s" % (message.messageType, message.contents, destination), file=sys.stderr)
         threading.Thread(target = self.sendMessage, args = (host, message)).start()
 
     #sendAll(self, messageType, contents, slot):
@@ -46,6 +48,7 @@ class Messenger:
         threads = list()
         for key, host in self.hosts.items():
             message = Message(self.siteID, key, messageType, contents, slot)
+            print("sending %s %s to all sites" % (message.messageType, message.contents), file=sys.stderr)
             t = threading.Thread(target = self.sendMessage, args = ((host['ip_address'], host['udp_end_port']), message))
             threads.append(t)
             t.start()
@@ -66,6 +69,7 @@ class Messenger:
         #print("SiteId", message.origin)
         #print("Message_Type", message.messageType)
         #print("Content", message.contents)
+        print("received %s %s from %s" % (message.messageType, message.contents, message.origin), file=sys.stderr)
         for listener in self.listeners:
             listener.receive(message) 
 
