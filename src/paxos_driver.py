@@ -65,7 +65,7 @@ class PaxosDriver():
         if not self.fillHoles():
             return False
         while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and self.learner.log[-1] != event ):
-            print("HEREHERE\nHEREHEREHEREHEREHERE\nHEREHEREHEREHERE") 
+            #print("HEREHERE\nHEREHEREHEREHEREHERE\nHEREHEREHEREHERE") 
             if self.airport.checkSpot(event):
                 l = len(self.learner.log)
                 #print("log position is", len(self.learner.log))
@@ -81,7 +81,7 @@ class PaxosDriver():
     def cancelReservation(self, event):
         self.fillHoles()
         while (len(self.learner.log) == 0) or (len(self.learner.log) > 0 and self.learner.log[-1] != event ):
-            print ("here")
+            #print ("here")
             if event.user in self.airport.allUsers:
                 l = len(self.learner.log)
                 #print("log position is", len(self.learner.log))

@@ -20,7 +20,7 @@ class Proposer():
 
     # Phase 1 of the Synod algorithm
     def _prepare(self, value, slot, counter=0):
-        print("prepare")
+        #print("prepare")
 
         # Make sure slots are initialized.
         if slot >= len(self.proposals):
@@ -42,7 +42,7 @@ class Proposer():
         # Paxos optimization
         if slot > 0 and self.proposals[slot-1] != None:
             if self.proposals[slot-1]['valueAccepted']:
-                print("optimo")
+                #print("optimo")
                 self.proposals[slot]['proposalNum'] = 0
                 self.proposals[slot]['promises'] = self.proposals[slot-1]['promises']
                 self.proposals[slot]['accepted'] = True
@@ -57,7 +57,7 @@ class Proposer():
 
     def prepare(self, value, slot):
         for i in range(3):
-            print(i)
+            #print(i)
             self._prepare(value, slot)
             time.sleep(0.5)
             if self.proposals[slot]['accepted'] == True:
@@ -67,15 +67,15 @@ class Proposer():
 
 
     def receive(self, message):
-        print("hello")
-        print(message.messageType)
+        #print("hello")
+        #print(message.messageType)
         if message.messageType == 'promise':
             self.receivePromise(message)
 
     # Phase 2 of the Synod algorithm
     # Message has the contents ('promise', accNum, accVal)
     def receivePromise(self, message):
-        print("receivePromise")
+        #print("receivePromise")
         # Update maxPropNum if necessary
         if message.contents[0] != None:
             if message.contents[0] > self.maxPropNums[message.slot]:
@@ -91,15 +91,15 @@ class Proposer():
         numPromises = reduce((lambda a, b: a + (1 if b != None else 0)), proposal['promises'].values(), 0)
         allNull = reduce((lambda a, b: a and (b == None or b == (None, None))), proposal['promises'].values(), True)  
 
-        print(proposal['promises'])
-        print("numPromises, allNull " + str(numPromises) + ", " + str(allNull))
+        #print(proposal['promises'])
+        #print("numPromises, allNull " + str(numPromises) + ", " + str(allNull))
         if numPromises > 0 and not allNull:
             actualPromises = list(filter((lambda a: a[1] != None and a[1][0] != None), list(proposal['promises'].items())))
             maxProcess = actualPromises[0]
             for promise in actualPromises:
-                print(promise)
+                #print(promise)
                 if promise[1][0] > maxProcess[1][0]:
-                    print(promise[1][1])
+                    #print(promise[1][1])
                     maxProcess = promise 
 
 
