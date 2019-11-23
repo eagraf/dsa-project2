@@ -30,6 +30,7 @@ class Proposer():
         proposal['value'] = value
         proposal['proposalNum'] = self.nextNum()
         proposal['accepted'] = False
+        proposal['valueAccepted'] = False
         proposal['counter'] = counter
         proposal['time'] = time.time
         proposal['promises'] = dict()
@@ -37,6 +38,18 @@ class Proposer():
             proposal['promises'][process] = None
 
         self.proposals[slot] = proposal
+
+        # Paxos optimization
+        if slot > 0 and self.proposals[slot-1] != None:
+            if self.proposals[slot-1]['valueAccepted']:
+                print("optimo")
+                self.proposals[slot]['proposalNum'] = 0
+                self.proposals[slot]['promises'] = self.proposals[slot-1]['promises']
+                self.proposals[slot]['accepted'] = True
+                self.proposals[slot]['valueAccepted'] = True
+                self.messenger.sendAll('accept', (proposal['proposalNum'], value), slot)
+                return True
+
 
         # Send to all acceptors
         self.messenger.sendAll('prepare', (proposal['proposalNum'],), slot)
@@ -91,8 +104,10 @@ class Proposer():
         # If a majority of sites return promises, send accepted number and value
         if numPromises > len(self.processes) / 2 and proposal['accepted'] == False:
             proposal['accepted'] = True
+
             if allNull:
                 v = proposal['value']                            # if all promises had null values, use own value
+                proposal['valueAccepted'] = True
             else:
                 v = proposal['promises'][maxProcess[0]][1]          # accVal from promise with largest accNum
 
