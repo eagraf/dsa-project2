@@ -16,6 +16,8 @@ class Event:
             s += ' ' + str(self.planes[-1])
 
         return s
+
+    __repr__ = __str__
     
     def same(self, other):
         return(
